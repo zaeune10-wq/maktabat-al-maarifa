@@ -12,4 +12,15 @@ export const CATEGORIES: Category[] = [
   { id: '8', name: 'كتب متنوعة', icon: '📚' }
 ];
 
-export const MOCK_BOOKS: Book[] = [];
+export const MOCK_BOOKS: Book[] = [
+  {
+    id: 'godot-1952',
+    title: 'في انتظار جودو',
+    author: 'صمويل بيكيت',
+    category: 'أدب',
+    description: 'مسرحية فلسفية تناقش عبثية الانتظار ومعنى الوجود الإنساني. (إصدار مكتبة المعرفة)',
+    year: '1952',
+    coverUrl: 'https://i.postimg.cc/d3BBK1pm/Screenshot-20251231-210959-com-huawei-hwread-dz-edit-382134699900542.jpg',
+    readUrl: 'https://pdfhost.io/v/kzm6bbcXvA_ÙÙØªØ¨Ø©_Ø§ÙÙØ¹Ø±ÙØ©_ÙÙ_Ø§ÙØªØ¸Ø OR_Ø¬ÙØ¯Ù_ØµÙÙÙÙ_Ø¨ÙÙÙØª'
+  }
+];

@@ -1,13 +1,14 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { getLibrarianResponse } from '../services/geminiService';
-import { MOCK_BOOKS } from '../constants';
+import { Book } from '../types';
 
 interface VirtualLibrarianProps {
   currentRatings?: Record<string, number>;
+  currentBooks: Book[];
 }
 
-const VirtualLibrarian: React.FC<VirtualLibrarianProps> = ({ currentRatings = {} }) => {
+const VirtualLibrarian: React.FC<VirtualLibrarianProps> = ({ currentRatings = {}, currentBooks }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
     { role: 'ai', text: 'أهلاً بك في مكتبة المعرفة الإلكترونية! أنا مساعدك الذكي، كيف يمكنني مساعدتك في العثور على كتاب اليوم؟ يمكنني أيضاً مساعدتك في مراجعة الكتب التي قمت بتقييمها.' }
@@ -30,8 +31,8 @@ const VirtualLibrarian: React.FC<VirtualLibrarianProps> = ({ currentRatings = {}
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsLoading(true);
 
-    // Add rating info to context if available
-    const context = MOCK_BOOKS.map(b => {
+    // Use currentBooks for live context
+    const context = currentBooks.map(b => {
       const rating = currentRatings[b.id];
       return `${b.title} لـ ${b.author} (${b.category})${rating ? ` - تقييم المستخدم لهذا الكتاب: ${rating} من 5 نجوم` : ''}`;
     }).join('\n');
