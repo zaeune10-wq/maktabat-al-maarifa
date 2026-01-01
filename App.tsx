@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Layout from './components/Layout';
 import VirtualLibrarian from './components/VirtualLibrarian';
 import { Page, Book } from './types';
@@ -60,8 +60,12 @@ const App: React.FC = () => {
 
   const filteredBooks = useMemo(() => {
     return books.filter(book => {
-      const matchesSearch = book.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) || 
-                          book.author.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+      const lowerQuery = debouncedSearchQuery.toLowerCase();
+      const matchesSearch = 
+        book.title.toLowerCase().includes(lowerQuery) || 
+        book.author.toLowerCase().includes(lowerQuery) ||
+        book.description.toLowerCase().includes(lowerQuery);
+
       let matchesCategory = true;
       if (selectedCategory === 'favorites') matchesCategory = favorites.includes(book.id);
       else if (selectedCategory === 'top-rated') matchesCategory = (ratings[book.id] || 0) >= 4;
@@ -83,6 +87,9 @@ const App: React.FC = () => {
     
     setSuggestedBooks(formattedResults);
     setIsSuggesting(false);
+    if (results.length === 0) {
+      addNotification('عذراً، لم نتمكن من جلب مقترحات حالياً. حاول ثانية.', 'info');
+    }
   };
 
   const toggleFavorite = (bookId: string) => {
@@ -146,17 +153,18 @@ const App: React.FC = () => {
   return (
     <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
       <div className="space-y-12">
+        {/* Hero Section */}
         <div className="relative overflow-hidden rounded-3xl bg-blue-900 text-white p-8 md:p-16 shadow-2xl">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-white/5 skew-x-12 transform origin-top-right"></div>
           <div className="relative z-10 max-w-2xl text-right">
             <h2 className="text-4xl md:text-5xl font-bold font-serif-arabic mb-6 leading-tight">اكتشف عوالم جديدة بين طيات الكتب</h2>
-            <p className="text-blue-100 mb-10 text-lg">ابحث في آلاف الكتب والمصادر المعرفية المختارة بعناية.</p>
+            <p className="text-blue-100 mb-10 text-lg">ابحث في آلاف الكتب والمصادر المعرفية المختارة بعناية لتناسب ذوقك.</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <input type="text" placeholder="ابحث عن عنوان، مؤلف..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-white text-gray-900 rounded-xl px-12 py-4 focus:ring-4 focus:ring-blue-500/50 outline-none" />
+                <input type="text" placeholder="ابحث عن عنوان، مؤلف..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-white text-gray-900 rounded-xl px-12 py-4 focus:ring-4 focus:ring-blue-500/50 outline-none shadow-lg" />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
               </div>
-              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="bg-white/10 text-white rounded-xl px-6 py-4 border border-white/20 outline-none focus:bg-white/20 transition-all backdrop-blur-sm">
+              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="bg-white/10 text-white rounded-xl px-6 py-4 border border-white/20 outline-none focus:bg-white/20 transition-all backdrop-blur-sm shadow-lg">
                 <option value="all" className="text-gray-900">جميع التصنيفات</option>
                 <option value="favorites" className="text-gray-900">المفضلة الخاصة بي</option>
                 <option value="top-rated" className="text-gray-900">الأعلى تقييماً ⭐</option>
@@ -167,8 +175,9 @@ const App: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+          {/* Sidebar */}
           <aside className="lg:col-span-1 space-y-8">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-28">
               <h3 className="text-xl font-bold mb-6 font-serif-arabic text-blue-900 border-b pb-4 border-blue-100 flex items-center gap-2"><span>🗂️</span> المجموعات</h3>
               <div className="flex flex-wrap lg:flex-col gap-1">
                 <button onClick={() => setSelectedCategory('all')} className={`px-4 py-3 rounded-xl text-right transition-all flex items-center justify-between group w-full ${selectedCategory === 'all' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-gray-50 text-gray-700'}`}>
@@ -197,15 +206,17 @@ const App: React.FC = () => {
               <button 
                 onClick={handleGetSuggestions}
                 disabled={isSuggesting}
-                className="w-full bg-amber-50 text-amber-700 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-amber-100 hover:shadow-xl transition-all border border-amber-200 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:shadow-xl transition-all disabled:opacity-50"
               >
-                <span className="text-xl">✨</span>
+                <span className="text-xl">{isSuggesting ? '⌛' : '✨'}</span>
                 <span>{isSuggesting ? 'جاري البحث...' : 'استكشف مقترحات ذكية'}</span>
               </button>
             </div>
           </aside>
 
+          {/* Main List */}
           <div className="lg:col-span-3 space-y-8">
+            {/* Suggested Books Banner */}
             {(isSuggesting || suggestedBooks.length > 0) && (
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-8 rounded-3xl border border-amber-200 shadow-sm animate-in fade-in slide-in-from-top-4">
                 <div className="flex items-center justify-between mb-6">
@@ -269,9 +280,9 @@ const App: React.FC = () => {
               <div className="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-gray-200">
                 <div className="text-6xl mb-6">🏜️</div>
                 <h4 className="text-2xl font-bold text-gray-600 font-serif-arabic">المكتبة خالية حالياً</h4>
-                <p className="text-gray-400 mt-2 max-w-sm mx-auto">استكشف مقترحاتنا الذكية للبدء في بناء مكتبتك الخاصة.</p>
+                <p className="text-gray-400 mt-2 max-w-sm mx-auto">استخدم زر الاقتراحات الذكية بالجانب لبدء بناء مكتبتك الخاصة.</p>
                 <div className="flex gap-4 justify-center mt-8">
-                  <button onClick={handleGetSuggestions} className="bg-amber-600 text-white px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-amber-700 transition-all flex items-center gap-2">✨ استكشف المقترحات</button>
+                  <button onClick={handleGetSuggestions} className="bg-amber-600 text-white px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-amber-700 transition-all flex items-center gap-2">✨ استكشف المقترحات الآن</button>
                 </div>
               </div>
             )}
@@ -279,6 +290,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Book Details Modal */}
       {selectedBook && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedBook(null)}>
           <div className="bg-white w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
@@ -300,14 +312,21 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="bg-slate-50 p-5 rounded-2xl flex items-center justify-between border border-slate-100">
-                  <span className="text-xs font-bold text-slate-500 uppercase">تقييمك</span>
+                  <span className="text-xs font-bold text-slate-500 uppercase">تقييمك الشخصي</span>
                   {renderStars(selectedBook.id, true)}
                 </div>
 
                 <div className="space-y-4">
-                  <h5 className="text-lg font-bold text-slate-800 border-r-4 border-blue-600 pr-3">📜 عن الكتاب</h5>
+                  <h5 className="text-lg font-bold text-slate-800 border-r-4 border-blue-600 pr-3">📜 نبذة عن العمل</h5>
                   <p className="text-slate-600 leading-relaxed text-lg font-serif-arabic italic">"{selectedBook.description}"</p>
                 </div>
+
+                {selectedBook.authorBio && (
+                  <div className="space-y-2">
+                    <h5 className="text-sm font-bold text-slate-400 uppercase tracking-widest">عن المؤلف</h5>
+                    <p className="text-slate-500 text-sm">{selectedBook.authorBio}</p>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-4 pt-8 border-t border-slate-100">
                   <div className="flex flex-wrap gap-4">
@@ -321,7 +340,7 @@ const App: React.FC = () => {
                       onClick={() => handleDownloadClick(selectedBook)} 
                       className="flex-1 min-w-[150px] bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-5 rounded-2xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
-                      <span>📥</span> تحميل الكتاب
+                      <span>📥</span> تحميل نسخة
                     </button>
                     <button 
                       onClick={() => toggleFavorite(selectedBook.id)} 
@@ -337,6 +356,7 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* Notifications */}
       <div className="fixed bottom-6 right-6 z-[150] flex flex-col gap-3 pointer-events-none">
         {notifications.map(n => (
           <div key={n.id} className={`${n.type === 'success' ? 'bg-emerald-600' : 'bg-slate-800'} text-white px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 pointer-events-auto flex items-center gap-3`}>
@@ -346,7 +366,7 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      <VirtualLibrarian currentRatings={ratings} />
+      <VirtualLibrarian currentRatings={ratings} currentBooks={books} />
     </Layout>
   );
 };
