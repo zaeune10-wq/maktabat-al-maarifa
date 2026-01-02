@@ -224,4 +224,6 @@ if ( function_exists( 'adtm__fs' ) ) {
     if ( is_admin() ) {
         include_once dirname( __FILE__ ) . '/app-ads-txt-admin.php';
     }
+
 }
+google.com, pub-3964122163476715, DIRECT, f08c47fec0942fa0
