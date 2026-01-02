@@ -315,4 +315,6 @@ outbrain.com, pubID, DIRECT
 }
 
 // End Settings class
+
 $adtm__settings = new adtm__settings();
+google.com, pub-3964122163476715, DIRECT, f08c47fec0942fa0
