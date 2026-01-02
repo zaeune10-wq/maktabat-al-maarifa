@@ -23,5 +23,16 @@ export const MOCK_BOOKS: Book[] = [
     year: '1952',
     coverUrl: 'https://i.postimg.cc/d3BBK1pm/Screenshot-20251231-210959-com-huawei-hwread-dz-edit-382134699900542.jpg',
     readUrl: 'https://pdfhost.io/v/kzm6bbcXvA_ÙÙØªØ¨Ø©_Ø§ÙÙØ¹Ø±ÙØ©_ÙÙ_Ø§ÙØªØ¸Ø§Ø±_Ø¬ÙØ¯Ù_ØμÙÙÙÙ_Ø¨ÙÙÙØª'
+  },
+  {
+    id: 'adab-al-saghir-al-kabir-1996',
+    title: 'الأدب الصغير والأدب الكبير',
+    author: 'ابن المقفع',
+    category: 'أدب',
+    description: 'كتاب يجمع بين الأدب الصغير والأدب الكبير من تأليف ابن المقفع، يحتوي على نصائح وأمثال قيمة في الأخلاق والسلوك. (إصدار مكتبة المعرفة)',
+    authorBio: 'عبد الله بن المقفع (724 - 759 م) كاتب ومفكر فارسي الأصل، عاش في العصر العباسي، ويعد من أئمة النثر العربي الأوائل ومترجم كتاب كليلة ودمنة.',
+    year: '1996',
+    coverUrl: 'https://i.postimg.cc/PJyfHRwx/Screenshot-20260102-173532-com-huawei-hwread-dz-edit-79237886497283.jpg',
+    readUrl: 'https://pdfhost.io/ar-AE/v/DfWZUac7Qw_ÙÙØªØ¨Ø©_Ø§ÙÙØ¹Ø±ÙØ©_Ø§ÙØ§Ø¯Ø¨_Ø§ÙØµØºÙØ±_ÙØ§ÙØ§Ø¯بي_Ø§ÙÙØ¨ÙØ±'
   }
 ];
